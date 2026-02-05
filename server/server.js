@@ -2,6 +2,7 @@
 import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
+import compression from "compression"
 import followupsRouter from "./routes/followups.js"
 import brokersRouter from "./routes/brokers.js"
 import leadsRouter from "./routes/leads.js"
@@ -19,6 +20,7 @@ import integrationsRouter from "./routes/integrations.js"
 const app = express()
 
 // Middleware
+app.use(compression()) // Enable gzip compression for responses
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
