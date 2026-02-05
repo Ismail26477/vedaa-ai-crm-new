@@ -1,5 +1,5 @@
-/* Moved @import before @tailwind directives to fix CSS order error */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+/* Load fonts with display=swap for faster page render - non-blocking */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -7,8 +7,8 @@
 
 @layer base {
   :root {
-    /* Updated theme colors to royal blue (#1E63F3) */
-    /* Primary Royal AI Blue */
+    /* Updated theme colors to purple, dark navy, and soft lavender */
+    /* Primary Purple */
     --background: 220 20% 97%;
     --foreground: 224 71% 10%;
 
@@ -18,8 +18,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 224 71% 10%;
 
-    /* Primary Royal AI Blue */
-    --primary: 217 98% 50%;
+    /* Primary Purple */
+    --primary: 268 89% 59%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary Dark Navy */
@@ -29,16 +29,16 @@
     --muted: 220 14% 92%;
     --muted-foreground: 220 9% 46%;
 
-    /* Accent Light Blue */
-    --accent: 217 98% 93%;
-    --accent-foreground: 217 98% 50%;
+    /* Accent Soft Lavender */
+    --accent: 268 100% 96%;
+    --accent-foreground: 268 89% 59%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 13% 88%;
     --input: 220 13% 88%;
-    --ring: 217 98% 50%;
+    --ring: 268 89% 59%;
 
     --radius: 0.75rem;
 
@@ -47,12 +47,12 @@
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-    --info: 217 98% 50%;
+    --info: 199 89% 48%;
     --info-foreground: 0 0% 100%;
 
     /* Stage colors */
-    --stage-new: 217 98% 50%;
-    --stage-qualified: 217 98% 50%;
+    --stage-new: 199 89% 48%;
+    --stage-qualified: 268 89% 59%;
     --stage-proposal: 38 92% 50%;
     --stage-negotiation: 24 95% 53%;
     --stage-won: 142 76% 36%;
@@ -61,21 +61,21 @@
     /* Priority colors */
     --priority-hot: 0 84% 60%;
     --priority-warm: 24 95% 53%;
-    --priority-cold: 217 98% 50%;
+    --priority-cold: 199 89% 48%;
 
     /* Sidebar */
     --sidebar-background: 217 39% 11%;
-    --sidebar-foreground: 217 98% 96%;
-    --sidebar-primary: 217 98% 96%;
+    --sidebar-foreground: 268 100% 96%;
+    --sidebar-primary: 268 100% 96%;
     --sidebar-primary-foreground: 217 39% 11%;
-    --sidebar-accent: 217 98% 50%;
+    --sidebar-accent: 268 89% 59%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 217 98% 20%;
-    --sidebar-ring: 217 98% 50%;
+    --sidebar-border: 268 89% 20%;
+    --sidebar-ring: 268 89% 59%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 98% 50%) 0%, hsl(217 98% 40%) 100%);
-    --gradient-secondary: linear-gradient(135deg, hsl(217 39% 11%) 0%, hsl(217 98% 50%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(268 89% 59%) 0%, hsl(268 89% 48%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(217 39% 11%) 0%, hsl(268 89% 59%) 100%);
     --gradient-success: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(160 84% 39%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 20% 98%) 100%);
     --gradient-sidebar: linear-gradient(180deg, hsl(217 39% 15%) 0%, hsl(217 39% 8%) 100%);
@@ -85,8 +85,8 @@
     --shadow-md: 0 4px 6px -1px hsl(224 71% 10% / 0.1), 0 2px 4px -2px hsl(224 71% 10% / 0.1);
     --shadow-lg: 0 10px 15px -3px hsl(224 71% 10% / 0.1), 0 4px 6px -4px hsl(224 71% 10% / 0.1);
     --shadow-xl: 0 20px 25px -5px hsl(224 71% 10% / 0.1), 0 8px 10px -6px hsl(224 71% 10% / 0.1);
-    --shadow-glow: 0 0 20px hsl(217 98% 50% / 0.3);
-    --shadow-amber: 0 0 20px hsl(217 98% 50% / 0.3);
+    --shadow-glow: 0 0 20px hsl(268 89% 59% / 0.3);
+    --shadow-amber: 0 0 20px hsl(268 89% 59% / 0.3);
   }
 
   .dark {
@@ -99,32 +99,32 @@
     --popover: 224 71% 8%;
     --popover-foreground: 220 20% 95%;
 
-    --primary: 217 98% 60%;
+    --primary: 268 89% 70%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 98% 96%;
+    --secondary: 268 100% 96%;
     --secondary-foreground: 217 39% 11%;
 
     --muted: 224 71% 14%;
     --muted-foreground: 220 9% 60%;
 
-    --accent: 217 98% 50%;
-    --accent-foreground: 217 98% 96%;
+    --accent: 268 89% 40%;
+    --accent-foreground: 268 100% 96%;
 
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 224 71% 16%;
     --input: 224 71% 16%;
-    --ring: 217 98% 60%;
+    --ring: 268 89% 70%;
 
     --sidebar-background: 217 39% 8%;
-    --sidebar-foreground: 217 98% 96%;
-    --sidebar-primary: 217 98% 96%;
+    --sidebar-foreground: 268 100% 96%;
+    --sidebar-primary: 268 100% 96%;
     --sidebar-primary-foreground: 217 39% 8%;
-    --sidebar-accent: 217 98% 60%;
+    --sidebar-accent: 268 89% 70%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 217 98% 30%;
+    --sidebar-border: 268 89% 30%;
   }
 }
 
@@ -153,64 +153,65 @@
 }
 
 @layer components {
+  /* Minimal component styles - lazy load rest */
   .stat-card {
-    @apply bg-card rounded-xl p-5 shadow-md border border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+    @apply bg-card rounded-lg p-4 border border-border/30;
   }
 
   .stat-card-gradient {
-    @apply rounded-xl p-5 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+    @apply rounded-lg p-4;
   }
 
   .table-header {
-    @apply bg-muted/50 text-muted-foreground text-xs font-semibold uppercase tracking-wider;
+    @apply bg-muted/20 text-muted-foreground text-xs font-medium;
   }
 
   .badge-stage-new {
-    @apply bg-info/10 text-info border border-info/20;
+    @apply bg-info/10 text-info border border-info/20 text-xs px-2 py-1 rounded;
   }
 
   .badge-stage-qualified {
-    @apply bg-purple-100 text-purple-700 border border-purple-200;
+    @apply bg-purple-100 text-purple-700 border border-purple-200 text-xs px-2 py-1 rounded;
   }
 
   .badge-stage-proposal {
-    @apply bg-warning/10 text-warning border border-warning/20;
+    @apply bg-warning/10 text-warning border border-warning/20 text-xs px-2 py-1 rounded;
   }
 
   .badge-stage-negotiation {
-    @apply bg-orange-100 text-orange-700 border border-orange-200;
+    @apply bg-orange-100 text-orange-700 border border-orange-200 text-xs px-2 py-1 rounded;
   }
 
   .badge-stage-won {
-    @apply bg-success/10 text-success border border-success/20;
+    @apply bg-success/10 text-success border border-success/20 text-xs px-2 py-1 rounded;
   }
 
   .badge-stage-lost {
-    @apply bg-destructive/10 text-destructive border border-destructive/20;
+    @apply bg-destructive/10 text-destructive border border-destructive/20 text-xs px-2 py-1 rounded;
   }
 
   .badge-priority-hot {
-    @apply bg-destructive/10 text-destructive border border-destructive/20;
+    @apply bg-destructive/10 text-destructive border border-destructive/20 text-xs px-2 py-1 rounded;
   }
 
   .badge-priority-warm {
-    @apply bg-orange-100 text-orange-600 border border-orange-200;
+    @apply bg-orange-100 text-orange-600 border border-orange-200 text-xs px-2 py-1 rounded;
   }
 
   .badge-priority-cold {
-    @apply bg-info/10 text-info border border-info/20;
+    @apply bg-info/10 text-info border border-info/20 text-xs px-2 py-1 rounded;
   }
 
   .kanban-column {
-    @apply bg-muted/30 rounded-xl p-4 min-h-[500px] border border-border/50;
+    @apply bg-muted/20 rounded-lg p-3 min-h-[400px] border border-border/30;
   }
 
   .kanban-card {
-    @apply bg-card rounded-lg p-4 shadow-sm border border-border/50 cursor-grab active:cursor-grabbing transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+    @apply bg-card rounded-lg p-3 border border-border/30 cursor-grab;
   }
 
   .sidebar-item {
-    @apply flex items-center gap-3 px-4 py-2.5 rounded-lg text-sidebar-foreground/80 transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
+    @apply flex items-center gap-3 px-3 py-2 rounded text-sidebar-foreground/80 transition-colors duration-150;
   }
 
   .sidebar-item-active {
@@ -218,17 +219,17 @@
   }
 
   .input-search {
-    @apply bg-muted/50 border-0 focus:ring-2 focus:ring-primary/20 transition-all duration-200;
+    @apply bg-muted/30 border border-border rounded transition-colors duration-150;
   }
 
   .btn-gradient-primary {
     background: var(--gradient-primary);
-    @apply text-white font-medium shadow-md hover:shadow-lg transition-all duration-200;
+    @apply text-white font-medium;
   }
 
   .btn-gradient-secondary {
     background: var(--gradient-secondary);
-    @apply text-white font-medium shadow-md hover:shadow-lg transition-all duration-200;
+    @apply text-white font-medium;
   }
 }
 
@@ -252,16 +253,18 @@
     border-radius: 3px;
   }
 
+  /* GPU-accelerated animations - only 60fps paint */
   .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.2s ease-out forwards;
   }
 
   .animate-slide-up {
-    animation: slideUp 0.4s ease-out;
+    animation: slideUp 0.25s ease-out forwards;
   }
 
   .animate-scale-in {
-    animation: scaleIn 0.2s ease-out;
+    animation: scaleIn 0.15s ease-out forwards;
+    will-change: transform, opacity;
   }
 
   @keyframes fadeIn {
@@ -276,27 +279,28 @@
   @keyframes slideUp {
     from {
       opacity: 0;
-      transform: translateY(10px);
+      transform: translate3d(0, 4px, 0);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: translate3d(0, 0, 0);
     }
   }
 
   @keyframes scaleIn {
     from {
       opacity: 0;
-      transform: scale(0.95);
+      transform: scale3d(0.95, 0.95, 1);
     }
     to {
       opacity: 1;
-      transform: scale(1);
+      transform: scale3d(1, 1, 1);
     }
   }
 
+  /* Lightweight glass effect - no blur */
   .glass {
-    @apply bg-white/80 backdrop-blur-md;
+    @apply bg-white/70 border border-white/20;
   }
 
   .text-gradient-primary {
