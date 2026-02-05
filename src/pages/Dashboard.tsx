@@ -1,18 +1,14 @@
+
 "use client"
 
 import { Badge } from "@/components/ui/badge"
 import { Phone, Mail, MessageSquare } from "lucide-react"
-import { Lead } from "@/types/crm" // Declare Lead variable
 
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { StatCard } from "@/components/ui/stat-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar as CalendarComponent } from "@/components/ui/calendar"
-import { AddLeadDialog } from "@/components/leads/AddLeadDialog"
-import type { DashboardStats, Caller, CallLog, Activity } from "@/types/crm"
 import {
   TrendingUp,
   Users,
@@ -53,10 +49,10 @@ import {
 } from "recharts"
 import { Progress } from "@/components/ui/progress"
 import { PriorityBadge } from "@/components/ui/stage-badge"
-import { fetchDashboardStats, fetchLeads, fetchActivities, fetchCallers, fetchCallLogs, fetchFollowUps, fetchDashboardStats as refetchStats } from "@/lib/api"
+import { fetchDashboardStats, fetchLeads, fetchActivities, fetchCallers, fetchCallLogs, fetchFollowUps } from "@/lib/api"
+import type { DashboardStats, Lead, Caller, CallLog, Activity } from "@/types/crm"
 import { formatCurrency } from "@/lib/api"
 import { formatDistanceToNow } from "date-fns"
-import { handleAddLead } from "@/lib/api" // Declare handleAddLead variable
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -66,37 +62,56 @@ const Dashboard = () => {
   const [callers, setCallers] = useState<Caller[]>([])
   const [callLogs, setCallLogs] = useState<CallLog[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [followUps, setFollowUps] = useState<any[]>([]) // Declare followUps variable
-  const [addLeadDialogOpen, setAddLeadDialogOpen] = useState(false) // Declare setAddLeadDialogOpen variable
-  const [selectedDate, setSelectedDate] = useState(new Date()) // Declare selectedDate variable and setSelectedDate function
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         console.log("[v0] Fetching dashboard data...")
         const [statsData, leadsData, activitiesData, callersData, callLogsData, followUpsData] = await Promise.all([
-          fetchDashboardStats(),
-          fetchLeads(),
-          fetchActivities(),
-          fetchCallers(),
-          fetchCallLogs(),
-          fetchFollowUps(),
+          fetchDashboardStats().catch(e => {
+            console.error("[v0] Dashboard stats error:", e)
+            return null
+          }),
+          fetchLeads().catch(e => {
+            console.error("[v0] Leads error:", e)
+            return []
+          }),
+          fetchActivities().catch(e => {
+            console.error("[v0] Activities error:", e)
+            return []
+          }),
+          fetchCallers().catch(e => {
+            console.error("[v0] Callers error:", e)
+            return []
+          }),
+          fetchCallLogs().catch(e => {
+            console.error("[v0] Call logs error:", e)
+            return []
+          }),
+          fetchFollowUps().catch(e => {
+            console.error("[v0] Follow-ups error:", e)
+            return []
+          }),
         ])
 
         console.log("[v0] Dashboard stats received:", statsData)
-        console.log("[v0] Leads count:", leadsData.length)
-        console.log("[v0] Active Leads:", statsData?.activeLeads)
-        console.log("[v0] Hot Leads:", statsData?.hotLeads)
-        console.log("[v0] Deals Closed:", statsData?.dealsClosed)
+        console.log("[v0] Leads count:", leadsData?.length || 0)
 
-        setStats(statsData)
-        setLeads(leadsData)
-        setActivitiesData(activitiesData)
-        setCallers(callersData)
-        setCallLogs(callLogsData)
-        setFollowUps(followUpsData?.filter((fu) => fu.status === "pending") || [])
+        if (statsData) {
+          setStats(statsData)
+          setLeads(leadsData || [])
+          setActivitiesData(activitiesData || [])
+          setCallers(callersData || [])
+          setCallLogs(callLogsData || [])
+          setFollowUps(followUpsData?.filter((fu: any) => fu.status === "pending") || [])
+        } else {
+          setError("Backend API not available. Make sure the server is running.")
+        }
       } catch (error) {
         console.error("[v0] Error fetching dashboard data:", error)
+        setError("Failed to fetch dashboard data. Please refresh the page.")
       } finally {
         setLoading(false)
       }
@@ -111,6 +126,23 @@ const Dashboard = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">⚠️</span>
+          </div>
+          <h2 className="text-xl font-semibold text-foreground mb-2">Error Loading Dashboard</h2>
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()} variant="outline">
+            Retry
+          </Button>
         </div>
       </div>
     )
@@ -324,20 +356,6 @@ const Dashboard = () => {
     }
   }
 
-  const handleAddLeadSuccess = async () => {
-    // Refetch all data to ensure consistency
-    try {
-      const [statsData, leadsData] = await Promise.all([
-        fetchDashboardStats(),
-        fetchLeads(),
-      ])
-      setStats(statsData)
-      setLeads(leadsData)
-    } catch (error) {
-      console.error("[v0] Error refetching data:", error)
-    }
-  }
-
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
@@ -351,36 +369,15 @@ const Dashboard = () => {
           </p>
         </div>
         <div className="flex gap-2">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button size="sm" variant="outline" className="gap-2 bg-transparent">
-                <Calendar className="w-4 h-4" />
-                {selectedDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <CalendarComponent
-                mode="single"
-                selected={selectedDate}
-                onSelect={(date) => date && setSelectedDate(date)}
-                disabled={(date) => date > new Date()}
-              />
-            </PopoverContent>
-          </Popover>
-          <Button 
-            size="sm" 
-            className="gap-2 bg-gradient-to-r from-primary to-primary/80"
-            onClick={() => setAddLeadDialogOpen(true)}
-          >
+          <Button size="sm" variant="outline" className="gap-2 bg-transparent">
+            <Calendar className="w-4 h-4" />
+            Today
+          </Button>
+          <Button size="sm" className="gap-2 bg-gradient-to-r from-primary to-primary/80">
             <Plus className="w-4 h-4" />
             Add Lead
           </Button>
         </div>
-        <AddLeadDialog 
-          open={addLeadDialogOpen}
-          onOpenChange={setAddLeadDialogOpen}
-          onSuccess={handleAddLeadSuccess}
-        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -425,7 +422,10 @@ const Dashboard = () => {
         </CardContent>
       </Card>
 
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+
         {/* Lead Sources */}
         <Card>
           <CardHeader>
@@ -460,6 +460,8 @@ const Dashboard = () => {
           </CardContent>
         </Card>
         {/* Upcoming Follow-ups */}
+
+
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -507,6 +509,12 @@ const Dashboard = () => {
             </div>
           </CardContent>
         </Card>
+
+        
+
+        
+
+        
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -609,6 +617,8 @@ const Dashboard = () => {
         </Card>
       </div>
 
+      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           <CardHeader>
@@ -685,6 +695,8 @@ const Dashboard = () => {
         </Card>
       </div>
 
+      
+
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -758,6 +770,8 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
+
+      
     </div>
   )
 }
