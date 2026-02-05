@@ -1,4 +1,3 @@
-
 "use client"
 
 import { Badge } from "@/components/ui/badge"
@@ -66,29 +65,14 @@ const Dashboard = () => {
   const [followUps, setFollowUps] = useState<any[]>([]) // Declare followUps variable
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchInitialData = async () => {
       try {
-        console.log("[v0] Fetching dashboard data...")
-        const [statsData, leadsData, activitiesData, callersData, callLogsData, followUpsData] = await Promise.all([
+        // Fetch critical data first - stats and pending follow-ups only
+        console.log("[v0] Fetching critical dashboard data...")
+        const [statsData, followUpsData] = await Promise.all([
           fetchDashboardStats().catch(e => {
             console.error("[v0] Dashboard stats error:", e)
             return null
-          }),
-          fetchLeads().catch(e => {
-            console.error("[v0] Leads error:", e)
-            return []
-          }),
-          fetchActivities().catch(e => {
-            console.error("[v0] Activities error:", e)
-            return []
-          }),
-          fetchCallers().catch(e => {
-            console.error("[v0] Callers error:", e)
-            return []
-          }),
-          fetchCallLogs().catch(e => {
-            console.error("[v0] Call logs error:", e)
-            return []
           }),
           fetchFollowUps().catch(e => {
             console.error("[v0] Follow-ups error:", e)
@@ -96,28 +80,49 @@ const Dashboard = () => {
           }),
         ])
 
-        console.log("[v0] Dashboard stats received:", statsData)
-        console.log("[v0] Leads count:", leadsData?.length || 0)
-
         if (statsData) {
           setStats(statsData)
-          setLeads(leadsData || [])
-          setActivitiesData(activitiesData || [])
-          setCallers(callersData || [])
-          setCallLogs(callLogsData || [])
           setFollowUps(followUpsData?.filter((fu: any) => fu.status === "pending") || [])
+          setLoading(false)
         } else {
           setError("Backend API not available. Make sure the server is running.")
+          setLoading(false)
         }
       } catch (error) {
         console.error("[v0] Error fetching dashboard data:", error)
         setError("Failed to fetch dashboard data. Please refresh the page.")
-      } finally {
         setLoading(false)
       }
     }
 
-    fetchData()
+    // Fetch secondary data after initial render (non-blocking)
+    const fetchSecondaryData = async () => {
+      try {
+        console.log("[v0] Fetching secondary dashboard data...")
+        const [leadsData, activitiesData, callersData, callLogsData] = await Promise.all([
+          fetchLeads().catch(() => []),
+          fetchActivities().catch(() => []),
+          fetchCallers().catch(() => []),
+          fetchCallLogs().catch(() => []),
+        ])
+
+        setLeads(leadsData || [])
+        setActivitiesData(activitiesData || [])
+        setCallers(callersData || [])
+        setCallLogs(callLogsData || [])
+      } catch (error) {
+        console.error("[v0] Error fetching secondary data:", error)
+      }
+    }
+
+    fetchInitialData()
+    
+    // Defer secondary data loading with requestIdleCallback or setTimeout
+    const timeoutId = setTimeout(() => {
+      fetchSecondaryData()
+    }, 500)
+
+    return () => clearTimeout(timeoutId)
   }, [])
 
   if (loading) {
